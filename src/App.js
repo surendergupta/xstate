@@ -15,62 +15,71 @@ function App() {
   const base_endpoint = 'https://crio-location-selector.onrender.com';
   
   useEffect(() => {
-    const getCountry = () => {
-      fetch(`${base_endpoint}/countries`)
-        .then((res) => res.json())
-        .then((data) => setCountry(data))
-        .catch((err) => setMessage(err.message))
-      };
-      getCountry();
-     
+    const getCountry = async() => {
+      try {
+        const response = await fetch(`${base_endpoint}/countries`);
+        const data = await response.json();
+        setCountry(data);
+      } catch (error) {
+        setMessage('Failed to fetch countries');
+      }
+    };
+    getCountry();     
   }, []);
   
   
     useEffect(() => {
-      if(countryName){
-        setState([]);
-        setCity([]);
-        setStateName('');
-        setCityName('');
-
-        const getState = () => {
-          fetch(`${base_endpoint}/country=${countryName}/states`)
-            .then((res) => res.json())
-            .then((data) => setState(data))
-            .catch((err) => setMessage(err.message))
-        };
-        getState();
-      }
+      const getState = async() => {
+        if(countryName){
+          try {
+            const response = await fetch(`${base_endpoint}/country=${countryName}/states`);
+            const data = await response.json();
+            setState(data);
+          } catch (error) {
+            setMessage('Failed to fetch states');
+          }
+          setState([]);
+          setCity([]);
+          setStateName('');
+          setCityName('');
+        }
+      };
+      getState();
     }, [countryName])
 
     useEffect(() => {
-      if(countryName && stateName){
-        setCity([]);
-        setCityName('');
-      
-        const getCity = () => {
-          fetch(`${base_endpoint}/country=${countryName}/state=${stateName}/cities`)
-            .then((res) => res.json())
-            .then((data) => setCity(data))
-            .catch((err) => setMessage(err.message))
-        };
-        getCity();
-      }
-    }, [countryName, stateName])
+      const getCity = async () => {
+        if(countryName && stateName)
+        {
+          try {
+            const response = await fetch(`${base_endpoint}/country=${countryName}/state=${stateName}/cities`);
+            const data = await response.json();
+            setCity(data);
+          } catch (error) {
+            setMessage('Failed to fetch cities');
+          }
+          setCity([]);
+          setCityName('');
 
-    console.log(message);
+        }
+      };
+      getCity();
+    }, [countryName, stateName])
   
   return (
     <div className="App">
       <h1>Select Location</h1>
+      {message && <p className="error">{message}</p>}
       <div className='location'>
         <select 
           value={countryName} 
           onChange={(e) => setCountryName(e.target.value)}
           >
-          <option >Select Country</option>
-          {country.map((item, c) => (
-            <option key={c}>{item}</option>
+          <option value="">Select Country</option>
+          {country.map((item, index) => (
+            <option key={index} value={item}>
+              {item}
+            </option>
           ))}
         </select>
         <select 
@@ -78,24 +87,34 @@ function App() {
           onChange={(e) => setStateName(e.target.value)} 
           disabled={!countryName}
           >
-          <option >Select State</option>
-          {state && state.map((item, s) => (
-            <option key={s}>{item}</option>
+          <option value="">Select State</option>
+          {state && state.map((item, index) => (
+            <option key={index} value={item}>
+              {item}
+            </option>
           ))}
         </select>
         <select 
           value={cityName} 
           onChange={(e) => setCityName(e.target.value)} 
-          disabled={!stateName}
+          disabled={!stateName && !message}
           >
-          <option >Select City</option>
-          {city.length > 0 && city.map((item, c) => (
-            <option key={c}>{item}</option>
+          <option value="">Select City</option>
+          {city.length > 0 && city.map((item, index) => (
+            <option key={index} value={item}>
+              {item}
+            </option>
           ))}
         </select>
         </div>
-        { cityName && stateName && countryName ? 
-        <div className='message'>You selected <span className='city'>{cityName}</span>, <span className='state'>{stateName}, {countryName}</span></div> : null}
+        {cityName && stateName && countryName && (
+          <div className="message">
+            You selected <span className="city">{cityName}</span>,{' '}
+            <span className="state">
+              {stateName}, {countryName}
+            </span>
+          </div>
+        )}
     </div>
   );
 }
