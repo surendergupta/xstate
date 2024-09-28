@@ -1,3 +1,37 @@
 .App {
   padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.location
+{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 20px;
+  margin: 25px auto;
+}
+
+.location select{
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 5px;
+}
+
+.message{
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.city{
+  font-size: 28px;
+}
+.state
+{
+  color: #aca6a6;
 }
