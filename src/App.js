@@ -6,11 +6,11 @@ function App() {
   const [state, setState] = useState([]);
   const [city, setCity] = useState([]);
   
-  const [countryName, setCountryName] = useState('');
-  const [stateName, setStateName] = useState('');
-  const [cityName, setCityName] = useState('');
+  const [countryName, setCountryName] = useState("");
+  const [stateName, setStateName] = useState("");
+  const [cityName, setCityName] = useState("");
   
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   
   const base_endpoint = 'https://crio-location-selector.onrender.com';
   
@@ -19,6 +19,10 @@ function App() {
       try {
         const response = await fetch(`${base_endpoint}/countries`);
         const data = await response.json();
+        setState([]);
+        setCity([]);
+        setStateName("");
+        setCityName("");
         setCountry(data);
       } catch (error) {
         setMessage('Failed to fetch countries');
@@ -31,6 +35,12 @@ function App() {
     useEffect(() => {
       const getState = async() => {
         if(countryName){
+          setState([]);
+          setCity([]);
+          setStateName("");
+          setCityName("");
+        }
+        if(countryName.length > 3){
           try {
             const response = await fetch(`${base_endpoint}/country=${countryName}/states`);
             const data = await response.json();
@@ -38,10 +48,6 @@ function App() {
           } catch (error) {
             setMessage('Failed to fetch states');
           }
-          setState([]);
-          setCity([]);
-          setStateName('');
-          setCityName('');
         }
       };
       getState();
@@ -49,8 +55,12 @@ function App() {
 
     useEffect(() => {
       const getCity = async () => {
-        if(countryName && stateName)
+        if(stateName)
         {
+          setCity([]);
+          setCityName("");
+        }
+        if(stateName.length > 2) {
           try {
             const response = await fetch(`${base_endpoint}/country=${countryName}/state=${stateName}/cities`);
             const data = await response.json();
@@ -58,9 +68,6 @@ function App() {
           } catch (error) {
             setMessage('Failed to fetch cities');
           }
-          setCity([]);
-          setCityName('');
-
         }
       };
       getCity();
@@ -88,7 +95,7 @@ function App() {
           disabled={!countryName}
           >
           <option value="">Select State</option>
-          {state && state.map((item, index) => (
+          {state.length > 0 && state.map((item, index) => (
             <option key={index} value={item}>
               {item}
             </option>
@@ -97,7 +104,7 @@ function App() {
         <select 
           value={cityName} 
           onChange={(e) => setCityName(e.target.value)} 
-          disabled={!stateName && !message}
+          disabled={!stateName}
           >
           <option value="">Select City</option>
           {city.length > 0 && city.map((item, index) => (
