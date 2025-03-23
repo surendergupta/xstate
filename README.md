@@ -110,3 +110,4 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 - **Error Handling**: Describes how errors are managed.
 - **Future Enhancements**: Possible features to add later.
 - **License**: Type of license governing the app.
+ 
