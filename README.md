@@ -101,8 +101,6 @@ src
 
 This project is licensed under the MIT License. See the LICENSE file for more details.
 
-
-
 ### Key sections:
 - **Introduction**: Explains the purpose of the app.
 - **Demo**: A link to a deployed version of the app (replace with your actual deployment link if applicable).
